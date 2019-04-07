@@ -1,0 +1,14 @@
+<div class="meeting-day-display">
+  <div class="days-display">
+    <div class="day-display" [ngClass]="{'day-display-on': meets_on_day('M')}">M</div>
+    <div class="day-display" [ngClass]="{'day-display-on': meets_on_day('T')}">T</div>
+    <div class="day-display" [ngClass]="{'day-display-on': meets_on_day('W')}">W</div>
+    <div class="day-display" [ngClass]="{'day-display-on': meets_on_day('R')}">R</div>
+    <div class="day-display" [ngClass]="{'day-display-on': meets_on_day('F')}">F</div>
+    <div class="day-display" [ngClass]="{'day-display-on': meets_on_day('S')}">S</div>
+    <div class="day-display" [ngClass]="{'day-display-on': meets_on_day('U')}">U</div>
+  </div>
+  <div class="time-display">
+    {{start_time}} - {{end_time}}
+  </div>
+</div>

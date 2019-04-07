@@ -1,3 +1,55 @@
-<p>
-  home works!
-</p>
+<div class="home-container">
+  <div class="schedule_options_switcher">
+    <mat-tab-group>
+      <div *ngFor="let opt of selected_semester_schedule_options; index as i;">
+        <mat-tab [label]="opt.title">
+          <app-schedule-option-display [scheduleOption]="opt"></app-schedule-option-display>
+        </mat-tab>
+      </div>
+      <div>
+        <mat-tab [label]="'Create Schedule +'">
+          <div class="create-schedule-tab-cont">
+            <mat-form-field>
+              <mat-label>Create new schedule for semester:</mat-label>
+              <mat-select [formControl]="selectedSemesterForCreationControl">
+                <mat-option *ngFor="let sem of semesters" [value]="sem.id">
+                  {{sem.semester + ' ' + sem.year}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <br>
+            
+            <mat-form-field>
+              <input matInput placeholder="Title" type="text" [formControl]="titleForCreation">
+            </mat-form-field>
+            <br>
+            
+            <button mat-raised-button color="primary" (click)="create_schedule($event)">Create!</button>
+          </div>
+        </mat-tab>
+      </div>
+    </mat-tab-group>
+  </div>
+  <div class="section_selection">
+    <div class="semester-switcher">
+      <mat-form-field>
+        <mat-label>Switch Semester</mat-label>
+        <mat-select [formControl]="selectedSemesterControl">
+          <mat-option *ngFor="let sem of semesters" [value]="sem.id">
+            {{sem.semester + ' ' + sem.year}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="available-sections">
+      <div *ngIf="available_sections.length == 0">
+        <app-loading></app-loading>
+      </div>
+      <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+        <div *cdkVirtualFor="let item of ds" class="example-item">
+          <app-section-display  *ngIf="item != undefined" [section]="item"></app-section-display>
+        </div>
+      </cdk-virtual-scroll-viewport>
+    </div>
+  </div>
+</div>

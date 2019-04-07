@@ -1,0 +1,31 @@
+.meeting-day-display {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  text-align: center;
+}
+
+.days-display {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.day-display {
+  height: 20px;
+  border: 1px black solid;
+  background-color: transparent;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.day-display-on {
+  background-color: green;
+  color: white;
+}
+
+.time-display {
+  margin: 5px 0;
+}

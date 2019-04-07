@@ -1,0 +1,4 @@
+<div class="schedule_option_container">
+  <app-section-display *ngFor="let section of scheduleOption.sections;" [section]="section" [removable]="true"></app-section-display>
+  <div *ngIf="scheduleOption.sections.length == 0">Nothing here yet. Add sections by using drag and drop from the right panel.</div>
+</div>
