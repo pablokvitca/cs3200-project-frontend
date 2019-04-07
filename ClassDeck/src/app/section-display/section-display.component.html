@@ -7,7 +7,7 @@
     <app-meeting-days-display *ngFor="let mt of section.meeting_times" [meeting_days]="mt.meeting_days" [start_time]="mt.start_time" [end_time]="mt.end_time"></app-meeting-days-display>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-button *ngIf="removable">REMOVE</button>
-    <button mat-button *ngIf="!removable">ADD</button>
+    <button mat-button *ngIf="removable" (click)="remove_section_to_schedule_option($event, section.crn)">REMOVE</button>
+    <button mat-button *ngIf="!removable" (click)="add_section_to_schedule_option($event, section.crn)">ADD</button>
   </mat-card-actions>
 </mat-card>

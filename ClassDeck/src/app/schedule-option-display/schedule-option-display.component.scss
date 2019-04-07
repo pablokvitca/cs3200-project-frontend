@@ -2,8 +2,11 @@
   padding: 10px 15px;
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
 }
 
 app-section-display {
   width: 20%;
+  flex-grow: 1;
+  margin: 5px;
 }

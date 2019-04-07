@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-schedule-option-display',
@@ -8,6 +8,8 @@ import { Component, OnInit, Input } from '@angular/core';
 export class ScheduleOptionDisplayComponent implements OnInit {
 
   @Input() scheduleOption;
+  @Input() add_section;
+  @Input() remove_section;
 
   constructor() { }
 

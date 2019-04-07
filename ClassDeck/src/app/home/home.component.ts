@@ -1,11 +1,12 @@
 import { FormControl } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { DataSource } from '@angular/cdk/table';
-import { BehaviorSubject, Subscription, Observable } from 'rxjs';
+import { BehaviorSubject, Subscription, Observable, Scheduler } from 'rxjs';
 import { CollectionViewer } from '@angular/cdk/collections';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-home',
@@ -25,8 +26,14 @@ export class HomeComponent implements OnInit {
   titleForCreation = new FormControl();
   available_sections: any[] = [];
   ds: SectionsDataSource;
+  current_schedule_id = 1;
 
-  constructor(private httpClient: HttpClient, private router: Router) { }
+  @Output() remove_section = new EventEmitter<number>();
+  @Output() add_section = new EventEmitter<number>();
+
+  constructor(private httpClient: HttpClient, private router: Router) {
+    this.current_schedule_id = 1;
+  }
 
   ngOnInit() {
     this.load_semesters();
@@ -34,6 +41,40 @@ export class HomeComponent implements OnInit {
       this.refresh_selected_semester_schedule_options();
     })
     this.ds = new SectionsDataSource();
+    this.add_section.subscribe((crn) => {
+      let sec = _.find(this.available_sections, (sec) => {
+        return sec.crn == crn;
+      });
+      this.add_to_current_schedule_option(sec);
+      debugger;
+    });
+    this.remove_section.subscribe((crn) => {
+      this.remove_from_current_schedule_option(crn);
+      debugger;
+    });
+  }
+
+  remove_from_current_schedule_option(crn) {
+    this.set_current_schedule_option_sections(_.filter(this.get_current_schedule_option().sections, (sec) => {
+      return sec.crn != crn;
+    }));
+  }
+
+  get_current_schedule_option() {
+    return _.find(this.schedule_options, (opt) => {
+      return opt.schedule_option_id == this.current_schedule_id;
+    });
+  }
+
+  set_current_schedule_option_sections(sections) {
+    this.schedule_options = _.map(this.schedule_options, (opt) => {
+      if (opt.schedule_option_id == this.current_schedule_id) {
+        opt.sections = sections;
+        return opt;
+      } else {
+        return opt;
+      }
+    });
   }
 
   private load_all_sections() {
@@ -66,6 +107,21 @@ export class HomeComponent implements OnInit {
 
   public create_schedule(event) {
     //TODO:
+  }
+
+  public save_schedule(event) {
+    debugger
+  }
+
+  add_to_current_schedule_option(sec) {
+    this.schedule_options = _.map(this.schedule_options, (sch: any) => {
+      if (sch.schedule_option_id == this.current_schedule_id) {
+        if (!_.includes(sch.sections, sec)) {
+          sch.sections.push(sec);
+        }
+      }
+      return sch;
+    });
   }
 
   private load_options() {

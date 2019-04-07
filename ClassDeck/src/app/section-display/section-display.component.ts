@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
@@ -13,6 +13,8 @@ export class SectionDisplayComponent implements OnInit {
 
   @Input() section: any;
   @Input() removable: boolean = false;
+  @Input() add_section;
+  @Input() remove_section;
 
   constructor(private httpClient: HttpClient, private router: Router) { }
 
@@ -33,6 +35,14 @@ export class SectionDisplayComponent implements OnInit {
       .subscribe((res: any) => {
         this.section.meeting_times = res.meeting_times;
       });
+  }
+
+  add_section_to_schedule_option(event, crn) {
+    this.add_section.emit(crn);
+  }
+
+  remove_section_to_schedule_option(event, crn) {
+    this.remove_section.emit(crn);
   }
 
 }
