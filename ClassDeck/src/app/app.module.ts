@@ -7,10 +7,11 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppLogInComponent } from './app-log-in/app-log-in.component';
 
-import { MatButtonModule, MatCheckboxModule, MatInputModule, MatCardModule } from '@angular/material';
+import { MatButtonModule, MatCheckboxModule, MatInputModule, MatCardModule, MatIconModule, MatAutocompleteModule } from '@angular/material';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { HomeComponent } from './home/home.component';
 import { UserEditComponent } from './user-edit/user-edit.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,10 @@ import { UserEditComponent } from './user-edit/user-edit.component';
     MatCheckboxModule,
     MatInputModule,
     MatCardModule,
-    HttpClientModule
+    MatIconModule,
+    MatAutocompleteModule,
+    HttpClientModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
