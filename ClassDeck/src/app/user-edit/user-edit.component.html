@@ -1,52 +1,85 @@
-
 <div style="text-align:center; height=100%; padding-top: 15%;">
   <div class="user-edit-container">
     <mat-card class="user-edit-card" *ngIf="loaded">
       <mat-card-header>
         <mat-card-title>User Information</mat-card-title>
       </mat-card-header>
-      <mat-card-content class="user-edit-col-2">
-        <div class="left-side">
-          <mat-form-field>
-            <input matInput placeholder="NUID" [formControl]="nuidControl" #nuid [disabled]="true">
-          </mat-form-field>
-
-          <mat-form-field>
-            <input matInput placeholder="Name" [formControl]="nameControl"#name [disabled]="true">
-          </mat-form-field>
-
-          <mat-form-field>
-            <input matInput placeholder="E-mail" [formControl]="emailControl" #email [disabled]="true">
-          </mat-form-field>
-
-          <mat-form-field>
-            <input matInput placeholder="Password" type="password" [formControl]="passControl" #pass>
-          </mat-form-field>
-
-          <mat-form-field>
-            <input matInput placeholder="Repeat password" type="password" [formControl]="passrControl" #passr>
-          </mat-form-field>
-        </div>
-        <div class="right-side">
-          <h1>Degrees</h1>
-          <div *ngFor="let deg of degrees; index as i;" class="inline-btn">
-            <mat-form-field >
-              <input matInput [placeholder]="deg.type" type="text" [value]="deg.name" disabled>
-            </mat-form-field>
-            <button mat-icon-button (click)="remove_nth_degree($event, i)">
-              <mat-icon aria-label="">delete</mat-icon>
-            </button>
-          </div>
-          <div class="inline-btn">
-            <mat-form-field>
-              <input matInput placeholder="Add a degree" type="text" [formControl]="addDegreeControl" [matAutocomplete]="auto"#adddegree>
-            </mat-form-field>
-            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-              <mat-option *ngFor="let option of filteredOptions | async" [value]="option">{{option.name}}</mat-option>
-            </mat-autocomplete>
-            <button mat-icon-button (click)="add_degree($event, adddegree.value)">
-              <mat-icon aria-label="">add</mat-icon>
-            </button>
+      <mat-card-content>
+        <div class="home-container">
+          <div class="schedule_options_switcher">
+            <mat-tab-group>
+              <mat-tab [label]="'Fulfilled Classes'">
+                <div class="mat-tab tab-classes">
+                  <div *ngFor="let course of taken_classes; index as i;" class="inline-btn">
+                    <mat-form-field >
+                      <input matInput [placeholder]="'Fulfilled course'" type="text" [value]="course.class_dept + ' ' + course.class_number" disabled>
+                    </mat-form-field>
+                    <button mat-icon-button (click)="remove_nth_class($event, i)">
+                      <mat-icon aria-label="">delete</mat-icon>
+                    </button>
+                    <br>
+                  </div>
+                  <div class="inline-btn">
+                    <mat-form-field>
+                      <input matInput placeholder="Add a fulfilled course" type="text" [formControl]="addCourseControl" [matAutocomplete]="auto"#addcourse>
+                    </mat-form-field>
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                      <mat-option *ngFor="let option of filteredCourses | async" [value]="option">{{option.class_dept}} {{option.class_number}}</mat-option>
+                    </mat-autocomplete>
+                    <button mat-icon-button (click)="add_course($event, addcourse.value)">
+                      <mat-icon aria-label="">add</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              </mat-tab>
+              <mat-tab [label]="'Degrees'">
+                <div class="mat-tab tab-degrees">
+                  <div *ngFor="let deg of degrees; index as i;" class="inline-btn">
+                    <mat-form-field >
+                      <input matInput [placeholder]="deg.type" type="text" [value]="deg.name" disabled>
+                    </mat-form-field>
+                    <button mat-icon-button (click)="remove_nth_degree($event, i)">
+                      <mat-icon aria-label="">delete</mat-icon>
+                    </button>
+                    <br>
+                  </div>
+                  <div class="inline-btn">
+                    <mat-form-field>
+                      <input matInput placeholder="Add a degree" type="text" [formControl]="addDegreeControl" [matAutocomplete]="auto"#adddegree>
+                    </mat-form-field>
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                      <mat-option *ngFor="let option of filteredOptions | async" [value]="option">{{option.name}}</mat-option>
+                    </mat-autocomplete>
+                    <button mat-icon-button (click)="add_degree($event, adddegree.value)">
+                      <mat-icon aria-label="">add</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              </mat-tab>
+              <mat-tab [label]="'General Information'">
+                <div class="mat-tab tab-general">
+                  <mat-form-field>
+                    <input matInput placeholder="NUID" [formControl]="nuidControl" #nuid [disabled]="true">
+                  </mat-form-field>
+                  <br>
+                  <mat-form-field>
+                    <input matInput placeholder="Name" [formControl]="nameControl"#name [disabled]="true">
+                  </mat-form-field>
+                  <br>
+                  <mat-form-field>
+                    <input matInput placeholder="E-mail" [formControl]="emailControl" #email [disabled]="true">
+                  </mat-form-field>
+                  <br>
+                  <mat-form-field>
+                    <input matInput placeholder="Password" type="password" [formControl]="passControl" #pass>
+                  </mat-form-field>
+                  <br>
+                  <mat-form-field>
+                    <input matInput placeholder="Repeat password" type="password" [formControl]="passrControl" #passr>
+                  </mat-form-field>
+                </div>
+              </mat-tab>
+            </mat-tab-group>
           </div>
         </div>
       </mat-card-content>
