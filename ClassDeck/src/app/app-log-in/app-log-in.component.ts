@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { debug } from 'util';
 
 
 @Component({
@@ -21,7 +22,8 @@ export class AppLogInComponent implements OnInit {
     if (nuid.length > 7 && pass.length > 0) {
       this.httpClient.get(this.baseUrl + '/student/login?nuid=' + nuid + "&password=" + pass,
         {
-          responseType: "text"
+          responseType: "text",
+          withCredentials: true
         })
         .subscribe((res) => {
           console.log(res);

@@ -20,6 +20,11 @@
 
 .tab-classes {}
 
+.tab-classes div,
+.tab-classes div mat-for-field {
+  width: 100%;
+}
+
 .tab-degrees {}
 
 .tab-general {}
@@ -46,4 +51,13 @@ h1 {
 
 .inline-btn {
   display: flex;
+  justify-content: flex-end;
+}
+
+.inline-btn mat-form-field {
+  flex-grow: 1;
+}
+
+.inline-btn button {
+  flex-grow: 0;
 }

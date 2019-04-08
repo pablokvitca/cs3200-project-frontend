@@ -10,7 +10,7 @@
             <mat-tab-group>
               <mat-tab [label]="'Fulfilled Classes'">
                 <div class="mat-tab tab-classes">
-                  <div *ngFor="let course of taken_classes; index as i;" class="inline-btn">
+                  <div *ngFor="let course of courses; index as i;" class="inline-btn">
                     <mat-form-field >
                       <input matInput [placeholder]="'Fulfilled course'" type="text" [value]="course.class_dept + ' ' + course.class_number" disabled>
                     </mat-form-field>
@@ -21,10 +21,10 @@
                   </div>
                   <div class="inline-btn">
                     <mat-form-field>
-                      <input matInput placeholder="Add a fulfilled course" type="text" [formControl]="addCourseControl" [matAutocomplete]="auto"#addcourse>
+                      <input matInput placeholder="Add a fulfilled course" type="text" [formControl]="addCourseControl" [matAutocomplete]="autoC" #addcourse>
                     </mat-form-field>
-                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-                      <mat-option *ngFor="let option of filteredCourses | async" [value]="option">{{option.class_dept}} {{option.class_number}}</mat-option>
+                    <mat-autocomplete #autoC="matAutocomplete" [displayWith]="displayFnCourse">
+                      <mat-option *ngFor="let option of filteredCourses | async" [value]="option">{{option.class_dept}} {{option.class_number}} ({{option.name}})</mat-option>
                     </mat-autocomplete>
                     <button mat-icon-button (click)="add_course($event, addcourse.value)">
                       <mat-icon aria-label="">add</mat-icon>

@@ -86,21 +86,13 @@ export class UserEditComponent implements OnInit {
             this.update_loaded_flag();
           });
 
-        this.httpClient.get(this.baseUrl + '/taken_classes/' + this.user.nuid,
+        this.httpClient.get(this.baseUrl + '/student_taken_classes/' + this.user.nuid,
           {
             withCredentials: true
           })
           .subscribe((res: any) => {
             console.log(res);
-            this.courses = _.map(res, (element) => {
-              let crs;
-              this.course_options.forEach(opt => {
-                if (opt.id == element.degree_id) {
-                  crs = opt;
-                }
-              });
-              return crs;
-            });
+            this.courses = res;
             this.loaded_user_courses = true;
             this.update_loaded_flag();
           });
@@ -139,10 +131,12 @@ export class UserEditComponent implements OnInit {
   update_loaded_flag() {
     this.loaded = true
       && this.loaded_user
-      && this.loaded_degrees
       && this.loaded_user_degrees
-      && this.loaded_courses
       && this.loaded_user_courses;
+  }
+
+  displayFnCourse(crs?: any): string | undefined {
+    return crs ? crs.class_dept + " " + crs.class_number + "(" + crs.name + ")" : undefined;
   }
 
   displayFn(deg?: any): string | undefined {
@@ -155,8 +149,8 @@ export class UserEditComponent implements OnInit {
       const filterValue = value.toLowerCase();
 
       return pool.filter(option => {
-        var r = option.name.toLowerCase().includes(filterValue);
-        return r;
+        var r = option.class_dept + " " + option.class_number + " " + option.name;
+        return r.toLowerCase().includes(filterValue);
       });
     } catch (Exception) {
       return pool;
@@ -202,8 +196,8 @@ export class UserEditComponent implements OnInit {
   add_course(event, d) {
     for (let i = 0; i < this.course_options.length; i += 1) {
       if (this.course_options[i].name == d) {
-        if (-1 == _.findIndex(this.degrees, this.course_options[i])) {
-          this.degrees.push(this.course_options[i]);
+        if (-1 == _.findIndex(this.courses, this.course_options[i])) {
+          this.courses.push(this.course_options[i]);
         }
         break;
       }
