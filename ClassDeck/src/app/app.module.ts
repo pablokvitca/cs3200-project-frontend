@@ -7,7 +7,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppLogInComponent } from './app-log-in/app-log-in.component';
 
-import { MatButtonModule, MatCheckboxModule, MatInputModule, MatCardModule, MatIconModule, MatAutocompleteModule, MatTabsModule, MatSelectModule } from '@angular/material';
+import { MatButtonModule, MatCheckboxModule, MatInputModule, MatCardModule, MatIconModule, MatAutocompleteModule, MatTabsModule, MatSelectModule, MatToolbarModule } from '@angular/material';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { HomeComponent } from './home/home.component';
 import { UserEditComponent } from './user-edit/user-edit.component';
@@ -17,6 +17,7 @@ import { SectionDisplayComponent } from './section-display/section-display.compo
 import { MeetingDaysDisplayComponent } from './meeting-days-display/meeting-days-display.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { LoadingComponent } from './loading/loading.component';
+import { TopNavComponent } from './top-nav/top-nav.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { LoadingComponent } from './loading/loading.component';
     ScheduleOptionDisplayComponent,
     SectionDisplayComponent,
     MeetingDaysDisplayComponent,
-    LoadingComponent
+    LoadingComponent,
+    TopNavComponent
   ],
   imports: [
     BrowserModule,
@@ -40,6 +42,7 @@ import { LoadingComponent } from './loading/loading.component';
     MatCardModule,
     MatIconModule,
     MatTabsModule,
+    MatToolbarModule,
     MatAutocompleteModule,
     ScrollingModule,
     MatSelectModule,

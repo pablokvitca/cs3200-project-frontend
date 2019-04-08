@@ -26,12 +26,16 @@ export class HomeComponent implements OnInit {
   titleForCreation = new FormControl();
   available_sections: any[] = [];
   ds: SectionsDataSource;
+  prev_current_schedule_id = 1;
   current_schedule_id = 1;
+  selected = new FormControl(0);
+  to_remove_sections = [];
+  save_count = 0;
 
   @Output() remove_section = new EventEmitter<number>();
   @Output() add_section = new EventEmitter<number>();
 
-  constructor(private httpClient: HttpClient, private router: Router) {
+  constructor(private httpClient: HttpClient, private router: Router, private ref: ChangeDetectorRef) {
     this.current_schedule_id = 1;
   }
 
@@ -46,15 +50,23 @@ export class HomeComponent implements OnInit {
         return sec.crn == crn;
       });
       this.add_to_current_schedule_option(sec);
-      debugger;
     });
     this.remove_section.subscribe((crn) => {
       this.remove_from_current_schedule_option(crn);
-      debugger;
+    });
+    this.selected.valueChanges.subscribe((val) => {
+      if (val != this.selected_semester_schedule_options.length) {
+        val = _.filter(this.schedule_options, (opt) => {
+          return opt.semester_id == this.selectedSemesterControl.value;
+        })[val].schedule_option_id;
+        this.current_schedule_id = val;
+        this.update_current_section();
+      }
     });
   }
 
   remove_from_current_schedule_option(crn) {
+    this.to_remove_sections.push(crn);
     this.set_current_schedule_option_sections(_.filter(this.get_current_schedule_option().sections, (sec) => {
       return sec.crn != crn;
     }));
@@ -77,14 +89,14 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  private load_all_sections() {
-    //TODO: current schedule
-    this.httpClient.get(this.baseUrl + '/section/filtered/' + "1", {
+  private load_all_sections(sch_opt) {
+    this.httpClient.get(this.baseUrl + '/section/filtered/' + sch_opt, {
       withCredentials: true
     })
       .subscribe((res: any) => {
         this.available_sections = res;
         this.ds = new SectionsDataSource(this.available_sections);
+        this.ref.markForCheck()
       });
   }
 
@@ -106,11 +118,94 @@ export class HomeComponent implements OnInit {
   }
 
   public create_schedule(event) {
+    this.httpClient.post(this.baseUrl + "/schedule_option",
+      {
+        "schedule_option_id": -1,
+        "nuid": this.user.nuid,
+        "semester": this.selectedSemesterForCreationControl.value,
+        "title": this.titleForCreation.value
+      },
+      {
+        withCredentials: true
+      }).subscribe((res) => {
+        if (res[1] != undefined) {
+          this.current_schedule_id = res[1];
+          window.location.reload();
+        }
+      })
+  }
+
+  update_current_section() {
+    if (this.prev_current_schedule_id != this.current_schedule_id) {
+      this.prev_current_schedule_id = this.current_schedule_id;
+      this.load_all_sections(this.current_schedule_id);
+    }
+  }
+
+  public delete_schedule(event) {
+    this.httpClient.delete(this.baseUrl + "/schedule_option/" + this.current_schedule_id,
+      {
+        withCredentials: true
+      }).subscribe((res) => {
+        window.location.reload();
+      }, (err) => {
+        window.location.reload();
+      })
+  }
+
+  public duplicate_schedule(event) {
     //TODO:
   }
 
   public save_schedule(event) {
-    debugger
+    let option = this.selected_semester_schedule_options.find((opt) => {
+      return this.current_schedule_id == opt.schedule_option_id;
+    });
+    this.save_count = 1;
+    option.sections.forEach(section => {
+      this.httpClient.post(this.baseUrl + "/schedule_option_section",
+        {
+          schedule_id: option.schedule_option_id,
+          crn: section.crn
+        },
+        {
+          withCredentials: true
+        }).subscribe((res) => {
+          if (this.save_count == option.sections.length + this.to_remove_sections) {
+            window.location.reload();
+          } else {
+            this.save_count += 1;
+          }
+          console.log(res);
+        }, (err) => {
+          if (this.save_count == option.sections.length + this.to_remove_sections) {
+            window.location.reload();
+          } else {
+            this.save_count += 1;
+          }
+          console.log(err);
+        })
+    });
+    this.to_remove_sections.forEach((to_remove) => {
+      this.httpClient.delete(this.baseUrl + "/schedule_option_section/" + this.current_schedule_id + "/" + to_remove,
+        {
+          withCredentials: true
+        }).subscribe((res) => {
+          if (this.save_count == option.sections.length + this.to_remove_sections) {
+            window.location.reload();
+          } else {
+            this.save_count += 1;
+          }
+          console.log(res);
+        }, (err) => {
+          if (this.save_count == option.sections.length + this.to_remove_sections) {
+            window.location.reload();
+          } else {
+            this.save_count += 1;
+          }
+          console.log(err);
+        })
+    });
   }
 
   add_to_current_schedule_option(sec) {
@@ -131,7 +226,7 @@ export class HomeComponent implements OnInit {
       .subscribe((res: any[]) => {
         this.schedule_options = res;
         this.refresh_selected_semester_schedule_options();
-        this.load_all_sections();
+        this.load_all_sections(this.current_schedule_id);
       });
   }
 

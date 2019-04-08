@@ -1,10 +1,14 @@
 <div class="home-container">
   <div class="schedule_options_switcher">
-    <mat-tab-group>
+    <mat-tab-group [selectedIndex]="selected.value" (selectedIndexChange)="selected.setValue($event)">
       <div *ngFor="let opt of selected_semester_schedule_options; index as i;">
         <mat-tab [label]="opt.title">
           <app-schedule-option-display [scheduleOption]="opt" [remove_section]="remove_section" [add_section]="add_section"></app-schedule-option-display>
-          <button mat-raised-button color="primary" (click)="save_schedule($event)">Save!</button>
+          <div class="buttons-area">
+            <button mat-raised-button color="primary" (click)="save_schedule($event)">Save!</button>
+            <!--<button mat-raised-button color="accent" (click)="duplicate_schedule($event)">Duplicate</button>-->
+            <button mat-raised-button color="warn" (click)="delete_schedule($event)">Delete</button>
+          </div>
         </mat-tab>
       </div>
       <div>
