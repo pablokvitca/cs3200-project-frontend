@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
@@ -16,7 +16,7 @@ export class SectionDisplayComponent implements OnInit {
   @Input() add_section;
   @Input() remove_section;
 
-  constructor(private httpClient: HttpClient, private router: Router) { }
+  constructor(private httpClient: HttpClient, private router: Router, private ref: ChangeDetectorRef) { }
 
   ngOnInit() {
     if (this.section.meeting_times == undefined) {
@@ -34,6 +34,7 @@ export class SectionDisplayComponent implements OnInit {
     this.httpClient.get(this.baseUrl + '/section/' + this.section.crn)
       .subscribe((res: any) => {
         this.section.meeting_times = res.meeting_times;
+        this.ref.markForCheck();
       });
   }
 

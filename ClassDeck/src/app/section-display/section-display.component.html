@@ -1,7 +1,7 @@
 <mat-card class="section-display-card">
   <mat-card-header>
-    <mat-card-title>{{section.class_dept}} {{section.class_number}}</mat-card-title>
-    <mat-card-subtitle>CRN: {{section.crn}}</mat-card-subtitle>
+    <mat-card-title title="{{section.cdesc}}">{{section.cname}}</mat-card-title>
+    <mat-card-subtitle>{{section.class_dept}} {{section.class_number}} CRN: {{section.crn}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
     <app-meeting-days-display *ngFor="let mt of section.meeting_times" [meeting_days]="mt.meeting_days" [start_time]="mt.start_time" [end_time]="mt.end_time"></app-meeting-days-display>
