@@ -1,5 +1,6 @@
 <mat-card class="section-display-card">
   <mat-card-header>
+    <div mat-card-avatar class="degree-requirement" title="Indicates the class fulfills a requirement for one of your degrees." *ngIf="section.part_of_degree"></div>
     <mat-card-title title="{{section.cdesc}}">{{section.cname}}</mat-card-title>
     <mat-card-subtitle>{{section.class_dept}} {{section.class_number}} CRN: {{section.crn}}</mat-card-subtitle>
   </mat-card-header>
