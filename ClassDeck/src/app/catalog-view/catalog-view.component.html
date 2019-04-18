@@ -1,0 +1,16 @@
+<div class="catalog-container">
+  <div class="search-controls">
+    <mat-form-field>
+      <input matInput placeholder="Search..." type="text" [formControl]="searchBar">
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="filterClasses()">Search!</button>
+  </div>
+  <div class="catalog-view">
+    <div *ngFor="let course of filtered_courses" class="example-item">
+      <app-class-display *ngIf="course != undefined" [course]="course"></app-class-display>
+    </div>
+    <div *ngIf="!loaded">
+      <app-loading></app-loading>
+    </div>
+  </div>
+</div>

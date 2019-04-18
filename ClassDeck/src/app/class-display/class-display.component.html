@@ -1,0 +1,15 @@
+<mat-card class="class-display-card">
+  <mat-card-header>
+    <!--<div mat-card-avatar class="degree-requirement" title="Indicates the class fulfills a requirement for one of your degrees." *ngIf="section.part_of_degree"></div>-->
+    <mat-card-title>{{course.name}}</mat-card-title>
+    <mat-card-subtitle>{{course.class_dept}} {{course.class_number}} || {{course.class_level}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <p class="description">{{course.description}}</p>
+    <p class="credit-hours"><b>Credit hours:</b> {{course.credit_hours}}</p>
+    <app-display-prerequisites [classDept]="course.class_dept" [classNumber]="course.class_number"></app-display-prerequisites>
+  </mat-card-content>
+  <mat-card-actions class="right-align">
+    <a mat-raised-button href="https://wl11gp.neu.edu/udcprod8/bwckctlg.p_disp_course_detail?cat_term_in={{semester}}&subj_code_in={{course.class_dept}}&crse_numb_in={{course.class_number}}">VIEW ON NEU</a>
+  </mat-card-actions>
+</mat-card>

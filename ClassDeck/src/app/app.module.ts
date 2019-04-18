@@ -18,6 +18,10 @@ import { MeetingDaysDisplayComponent } from './meeting-days-display/meeting-days
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { LoadingComponent } from './loading/loading.component';
 import { TopNavComponent } from './top-nav/top-nav.component';
+import { CatalogViewComponent } from './catalog-view/catalog-view.component';
+import { ClassDisplayComponent } from './class-display/class-display.component';
+import { CatalogSelectionComponent } from './catalog-selection/catalog-selection.component';
+import { DisplayPrerequisitesComponent } from './display-prerequisites/display-prerequisites.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +34,11 @@ import { TopNavComponent } from './top-nav/top-nav.component';
     SectionDisplayComponent,
     MeetingDaysDisplayComponent,
     LoadingComponent,
-    TopNavComponent
+    TopNavComponent,
+    CatalogViewComponent,
+    ClassDisplayComponent,
+    CatalogSelectionComponent,
+    DisplayPrerequisitesComponent
   ],
   imports: [
     BrowserModule,
