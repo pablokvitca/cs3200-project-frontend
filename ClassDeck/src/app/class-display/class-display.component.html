@@ -7,9 +7,23 @@
   <mat-card-content>
     <p class="description">{{course.description}}</p>
     <p class="credit-hours"><b>Credit hours:</b> {{course.credit_hours}}</p>
-    <app-display-prerequisites [classDept]="course.class_dept" [classNumber]="course.class_number"></app-display-prerequisites>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Prerequisites</mat-panel-title>
+      </mat-expansion-panel-header>
+      <app-display-prerequisites [classDept]="course.class_dept" [classNumber]="course.class_number">
+      </app-display-prerequisites>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Sections</mat-panel-title>
+      </mat-expansion-panel-header>
+      <p>TODO: SECTIONS</p>
+    </mat-expansion-panel>
   </mat-card-content>
   <mat-card-actions class="right-align">
-    <a mat-raised-button href="https://wl11gp.neu.edu/udcprod8/bwckctlg.p_disp_course_detail?cat_term_in={{semester}}&subj_code_in={{course.class_dept}}&crse_numb_in={{course.class_number}}">VIEW ON NEU</a>
+    <a mat-raised-button target="_blank"
+      href="https://wl11gp.neu.edu/udcprod8/bwckctlg.p_disp_course_detail?cat_term_in={{semesterId}}&subj_code_in={{course.class_dept}}&crse_numb_in={{course.class_number}}">VIEW
+      ON NEU</a>
   </mat-card-actions>
 </mat-card>

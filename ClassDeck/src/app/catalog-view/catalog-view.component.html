@@ -5,6 +5,8 @@
     </mat-form-field>
     <button mat-raised-button color="primary" (click)="filterClasses()">Search!</button>
   </div>
+  <mat-paginator [length]="length" [pageSize]="pageSize" (page)="pageEvent($event)">
+  </mat-paginator>
   <div class="catalog-view">
     <div *ngFor="let course of filtered_courses" class="example-item">
       <app-class-display *ngIf="course != undefined" [course]="course"></app-class-display>

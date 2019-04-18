@@ -6,6 +6,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormControl } from '@angular/forms';
 import * as _ from 'lodash';
+import { PageEvent } from '@angular/material';
 
 @Component({
   selector: 'app-catalog-view',
@@ -16,10 +17,11 @@ export class CatalogViewComponent implements OnInit {
 
   baseUrl = "http://localhost:8080/pablokvitca/classdeck-api/1.0.0";
   semesterId;
-  courses: any[];
-  filtered_courses: any[];
+  courses: any[] = [];
+  filtered_courses: any[] = [];
   searchBar = new FormControl();
   loaded: boolean = false;
+  currentPage: number = 1;
 
   constructor(
     private route: ActivatedRoute,
@@ -35,17 +37,22 @@ export class CatalogViewComponent implements OnInit {
       .subscribe((res: any[]) => {
         this.loaded = true;
         this.courses = res;
-        this.filtered_courses = this.courses;
+        this.filterClasses();
         this.ref.markForCheck()
       });
+  }
+
+  pageEvent(event: PageEvent) {
+    this.currentPage = event.pageIndex;
+    this.filterClasses();
   }
 
   filterClasses() {
     let pl: boolean = this.loaded;
     this.loaded = false;
-    let value = this.searchBar.value;
-    value = value.toLowerCase()
-    this.filtered_courses = _.filter(this.courses, (course) => {
+    let value = this.searchBar.value || "";
+    value = value.toLowerCase();
+    let all_filtered = _.filter(this.courses, (course) => {
       let txt = course.class_dept
         + course.class_number
         + course.class_dept
@@ -54,9 +61,20 @@ export class CatalogViewComponent implements OnInit {
         + course.name;
       return txt.toLowerCase().includes(value);
     });
+    let chunks = _.chunk(all_filtered, this.pageSize);
+    this.filtered_courses = chunks[this.currentPage - 1];
+
     if (pl) {
       this.loaded = true;
     }
+  }
+
+  get length() {
+    return this.courses.length;
+  }
+
+  get pageSize() {
+    return 50;
   }
 
 }

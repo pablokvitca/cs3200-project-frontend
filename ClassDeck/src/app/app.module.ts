@@ -7,7 +7,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppLogInComponent } from './app-log-in/app-log-in.component';
 
-import { MatButtonModule, MatCheckboxModule, MatInputModule, MatCardModule, MatIconModule, MatAutocompleteModule, MatTabsModule, MatSelectModule, MatToolbarModule } from '@angular/material';
+import { MatButtonModule, MatCheckboxModule, MatInputModule, MatCardModule, MatIconModule, MatAutocompleteModule, MatTabsModule, MatSelectModule, MatToolbarModule, MatExpansionModule, MatPaginatorModule } from '@angular/material';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { HomeComponent } from './home/home.component';
 import { UserEditComponent } from './user-edit/user-edit.component';
@@ -51,6 +51,8 @@ import { DisplayPrerequisitesComponent } from './display-prerequisites/display-p
     MatIconModule,
     MatTabsModule,
     MatToolbarModule,
+    MatPaginatorModule,
+    MatExpansionModule,
     MatAutocompleteModule,
     ScrollingModule,
     MatSelectModule,

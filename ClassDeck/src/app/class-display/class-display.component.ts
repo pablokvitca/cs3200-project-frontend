@@ -9,6 +9,7 @@ import { Component, OnInit, Input } from '@angular/core';
 export class ClassDisplayComponent implements OnInit {
 
   @Input() course;
+  @Input() semesterId;
 
   constructor(private httpClient: HttpClient) { }
 
