@@ -15,6 +15,7 @@ export class SectionDisplayComponent implements OnInit {
   @Input() removable: boolean = false;
   @Input() add_section;
   @Input() remove_section;
+  @Input() catalog_view: boolean = false;
 
   constructor(private httpClient: HttpClient, private router: Router, private ref: ChangeDetectorRef) { }
 

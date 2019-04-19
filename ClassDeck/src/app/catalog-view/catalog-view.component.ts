@@ -21,7 +21,8 @@ export class CatalogViewComponent implements OnInit {
   filtered_courses: any[] = [];
   searchBar = new FormControl();
   loaded: boolean = false;
-  currentPage: number = 1;
+  currentPage: number = 0;
+  title: string = "Loading...";
 
   constructor(
     private route: ActivatedRoute,
@@ -38,6 +39,11 @@ export class CatalogViewComponent implements OnInit {
         this.loaded = true;
         this.courses = res;
         this.filterClasses();
+        this.ref.markForCheck()
+      });
+    this.httpClient.get(this.baseUrl + '/semester/' + this.semesterId)
+      .subscribe((res: any) => {
+        this.title = res.year + " " + res.semester + " Semester";
         this.ref.markForCheck()
       });
   }
@@ -62,7 +68,7 @@ export class CatalogViewComponent implements OnInit {
       return txt.toLowerCase().includes(value);
     });
     let chunks = _.chunk(all_filtered, this.pageSize);
-    this.filtered_courses = chunks[this.currentPage - 1];
+    this.filtered_courses = chunks[this.currentPage];
 
     if (pl) {
       this.loaded = true;

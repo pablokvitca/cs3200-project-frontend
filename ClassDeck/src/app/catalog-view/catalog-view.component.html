@@ -1,4 +1,5 @@
 <div class="catalog-container">
+  <h3>{{title}}</h3>
   <div class="search-controls">
     <mat-form-field>
       <input matInput placeholder="Search..." type="text" [formControl]="searchBar">
@@ -9,7 +10,7 @@
   </mat-paginator>
   <div class="catalog-view">
     <div *ngFor="let course of filtered_courses" class="example-item">
-      <app-class-display *ngIf="course != undefined" [course]="course"></app-class-display>
+      <app-class-display *ngIf="course != undefined" [course]="course" [semesterId]="semesterId"></app-class-display>
     </div>
     <div *ngIf="!loaded">
       <app-loading></app-loading>

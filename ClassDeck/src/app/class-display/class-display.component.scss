@@ -9,3 +9,18 @@
 .right-align {
   text-align: right;
 }
+
+.sections-display {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: stretch;
+
+  app-section-display {
+    min-width: 275px;
+    margin: 5px 5px;
+  }
+}
+
+mat-expansion-panel {
+  margin-bottom: 15px;
+}

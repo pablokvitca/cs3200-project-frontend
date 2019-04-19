@@ -7,18 +7,23 @@
   <mat-card-content>
     <p class="description">{{course.description}}</p>
     <p class="credit-hours"><b>Credit hours:</b> {{course.credit_hours}}</p>
-    <mat-expansion-panel>
+    <mat-expansion-panel (closed)="prereqExpanded(false)" (opened)="prereqExpanded(true)">
       <mat-expansion-panel-header>
         <mat-panel-title>Prerequisites</mat-panel-title>
       </mat-expansion-panel-header>
-      <app-display-prerequisites [classDept]="course.class_dept" [classNumber]="course.class_number">
+      <app-display-prerequisites [course]="course" [expanded]="expanded_prereq">
       </app-display-prerequisites>
     </mat-expansion-panel>
-    <mat-expansion-panel>
+    <mat-expansion-panel (closed)="sectionsExpanded(false)" (opened)="sectionsExpanded(true)">
       <mat-expansion-panel-header>
         <mat-panel-title>Sections</mat-panel-title>
       </mat-expansion-panel-header>
-      <p>TODO: SECTIONS</p>
+      <app-loading *ngIf="!loaded_sections"></app-loading>
+      <div class="sections-display" *ngIf="loaded_sections">
+        <p *ngIf="sections.length == 0">No sections found for this class during this semester.</p>
+        <app-section-display *ngFor="let section  of sections;" [section]="section" [catalog_view]="true">
+        </app-section-display>
+      </div>
     </mat-expansion-panel>
   </mat-card-content>
   <mat-card-actions class="right-align">

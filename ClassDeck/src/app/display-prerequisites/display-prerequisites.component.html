@@ -1,3 +1,5 @@
-<p>
-  TODO: PREREQUSITES FOR {{classDept}} {{classNumber}}
-</p>
+<div class="prereq-display">
+  <app-loading *ngIf="!loaded"></app-loading>
+  <p *ngIf="loaded"><b>Prerequisites: </b>{{prerequisitesText()}}</p>
+  <p *ngIf="loaded"><b>Corequisites: </b>{{corequisitesText()}}</p>
+</div>
