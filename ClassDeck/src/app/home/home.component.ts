@@ -7,6 +7,7 @@ import { DataSource } from '@angular/cdk/table';
 import { BehaviorSubject, Subscription, Observable, Scheduler } from 'rxjs';
 import { CollectionViewer } from '@angular/cdk/collections';
 import * as _ from 'lodash';
+import { PageEvent } from '@angular/material';
 
 @Component({
   selector: 'app-home',
@@ -24,13 +25,17 @@ export class HomeComponent implements OnInit {
   selectedSemesterControl = new FormControl();
   selectedSemesterForCreationControl = new FormControl();
   titleForCreation = new FormControl();
+  titleForUpdate = new FormControl();
   available_sections: any[] = [];
-  ds: SectionsDataSource;
+  filtered_sections: any[] = [];
   prev_current_schedule_id = 1;
   current_schedule_id = 1;
   selected = new FormControl(0);
   to_remove_sections = [];
   save_count = 0;
+  filterSectionsControl = new FormControl();
+  currentPage: number = 0;
+  loaded = false;
 
   @Output() remove_section = new EventEmitter<number>();
   @Output() add_section = new EventEmitter<number>();
@@ -39,12 +44,34 @@ export class HomeComponent implements OnInit {
     this.current_schedule_id = 1;
   }
 
+  filterSectionsUpdate() {
+    this.available_sections = [];
+    this.load_all_sections(this.current_schedule_id);
+  }
+
+  pageEvent(event: PageEvent) {
+    this.currentPage = event.pageIndex;
+    this.filterDisplaySections();
+  }
+
+  filterDisplaySections() {
+    let chunks = _.chunk(this.available_sections, this.pageSize);
+    this.filtered_sections = chunks[this.currentPage];
+  }
+
+  get length() {
+    return this.available_sections.length;
+  }
+
+  get pageSize() {
+    return 50;
+  }
+
   ngOnInit() {
     this.load_semesters();
     this.selectedSemesterControl.valueChanges.subscribe((value) => {
       this.refresh_selected_semester_schedule_options();
     })
-    this.ds = new SectionsDataSource();
     this.add_section.subscribe((crn) => {
       let sec = _.find(this.available_sections, (sec) => {
         return sec.crn == crn;
@@ -90,13 +117,15 @@ export class HomeComponent implements OnInit {
   }
 
   private load_all_sections(sch_opt) {
-    this.httpClient.get(this.baseUrl + '/section/filtered/' + sch_opt, {
+    this.loaded = false;
+    let query = this.filterSectionsControl.value == "" ? 'null' : this.filterSectionsControl.value;
+    this.httpClient.get(this.baseUrl + '/section/filtered/' + sch_opt + "/" + query, {
       withCredentials: true
     })
       .subscribe((res: any) => {
         this.available_sections = res;
-        this.ds = new SectionsDataSource(this.available_sections);
-        this.ref.markForCheck()
+        this.loaded = true;
+        this.pageEvent({ pageIndex: 0, pageSize: 50, length: this.available_sections.length })
       });
   }
 
@@ -154,7 +183,11 @@ export class HomeComponent implements OnInit {
   }
 
   public duplicate_schedule(event) {
-    //TODO:
+    this.httpClient.get(this.baseUrl + "/schedule_option/duplicate/" + this.current_schedule_id, {
+      withCredentials: true
+    }).subscribe((res) => {
+      window.location.reload();
+    });
   }
 
   public save_schedule(event) {
@@ -162,6 +195,25 @@ export class HomeComponent implements OnInit {
       return this.current_schedule_id == opt.schedule_option_id;
     });
     this.save_count = 1;
+    if (this.titleForUpdate.value && this.titleForUpdate.value != option.title) {
+      this.save_count = 0;
+      this.httpClient.put(this.baseUrl + "/schedule_option",
+        {
+          schedule_id: option.schedule_option_id,
+          title: this.titleForUpdate.value,
+          nuid: this.user.nuid,
+          semester: this.selectedSemesterControl.value + '',
+        },
+        {
+          withCredentials: true
+        }).subscribe((res) => {
+          if (this.save_count == option.sections.length + this.to_remove_sections) {
+            window.location.reload();
+          } else {
+            this.save_count += 1;
+          }
+        });
+    }
     option.sections.forEach(section => {
       this.httpClient.post(this.baseUrl + "/schedule_option_section",
         {
@@ -244,7 +296,6 @@ export class HomeComponent implements OnInit {
 
 
 export class SectionsDataSource extends DataSource<string | undefined> {
-  private length = 100000;
   private pageSize = 100;
   private cachedData = Array.from<string>({ length: this.length });
   private fetchedPages = new Set<number>();
@@ -254,6 +305,17 @@ export class SectionsDataSource extends DataSource<string | undefined> {
   constructor(data: any[] = []) {
     super()
     this.cachedData = data;
+  }
+
+  get length() {
+    if (this.cachedData && this.cachedData.length) {
+      return this.cachedData.length;
+    }
+    return 0;
+  }
+
+  switchData(new_data: any[]) {
+    this.cachedData = new_data;
   }
 
   connect(collectionViewer: CollectionViewer): Observable<(string | undefined)[]> {

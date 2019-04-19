@@ -3,12 +3,16 @@
     <mat-tab-group [selectedIndex]="selected.value" (selectedIndexChange)="selected.setValue($event)">
       <div *ngFor="let opt of selected_semester_schedule_options; index as i;">
         <mat-tab [label]="opt.title">
-          <app-schedule-option-display [scheduleOption]="opt" [remove_section]="remove_section" [add_section]="add_section"></app-schedule-option-display>
+          <mat-form-field class="update-title-form">
+            <input matInput placeholder="Update title" value="{{opt.title}}" type="text" [formControl]="titleForUpdate">
+          </mat-form-field>
           <div class="buttons-area">
             <button mat-raised-button color="primary" (click)="save_schedule($event)">Save!</button>
-            <!--<button mat-raised-button color="accent" (click)="duplicate_schedule($event)">Duplicate</button>-->
+            <button mat-raised-button color="accent" (click)="duplicate_schedule($event)">Duplicate</button>
             <button mat-raised-button color="warn" (click)="delete_schedule($event)">Delete</button>
           </div>
+          <app-schedule-option-display [scheduleOption]="opt" [remove_section]="remove_section"
+            [add_section]="add_section"></app-schedule-option-display>
         </mat-tab>
       </div>
       <div>
@@ -23,12 +27,12 @@
               </mat-select>
             </mat-form-field>
             <br>
-            
+
             <mat-form-field>
               <input matInput placeholder="Title" type="text" [formControl]="titleForCreation">
             </mat-form-field>
             <br>
-            
+
             <button mat-raised-button color="primary" (click)="create_schedule($event)">Create!</button>
           </div>
         </mat-tab>
@@ -46,15 +50,26 @@
         </mat-select>
       </mat-form-field>
     </div>
+    <div class="filter-sections-control">
+      <mat-form-field>
+        <input matInput placeholder="Search..." type="text" [formControl]="filterSectionsControl">
+      </mat-form-field>
+      <button mat-raised-button color="default" (click)="filterSectionsUpdate()">Search!</button>
+    </div>
+    <mat-paginator [length]="length" [pageSize]="pageSize" (page)="pageEvent($event)">
+    </mat-paginator>
     <div class="available-sections">
-      <div *ngIf="available_sections.length == 0">
-        <app-loading></app-loading>
+      <div *ngIf="!loaded">
+        <app-loading [alternateMessage]="'This might take a while, nothing is broken.'"></app-loading>
       </div>
-      <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
-        <div *cdkVirtualFor="let item of ds" class="example-item">
-          <app-section-display  *ngIf="item != undefined" [section]="item" [remove_section]="remove_section" [add_section]="add_section"></app-section-display>
+      <div class="section-viewport">
+        <div *ngIf="loaded">
+          <div *ngFor="let item of filtered_sections" class="section-item">
+            <app-section-display *ngIf="item != undefined" [section]="item" [remove_section]="remove_section"
+              [add_section]="add_section"></app-section-display>
+          </div>
         </div>
-      </cdk-virtual-scroll-viewport>
+      </div>
     </div>
   </div>
 </div>
