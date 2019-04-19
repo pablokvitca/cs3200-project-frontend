@@ -63,6 +63,9 @@
               </mat-tab>
               <mat-tab [label]="'General Information'">
                 <div class="mat-tab tab-general">
+                  <div *ngIf="all_errors.length > 0" class="errors-display">
+                    <mat-card *ngFor="let err of all_errors;" class="error-card">{{err}}</mat-card>
+                  </div>
                   <mat-form-field>
                     <input matInput placeholder="NUID" [formControl]="nuidControl" #nuid [disabled]="true">
                   </mat-form-field>

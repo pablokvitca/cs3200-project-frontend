@@ -11,7 +11,8 @@ import { debug } from 'util';
 })
 export class AppLogInComponent implements OnInit {
 
-  baseUrl = "http://localhost:8080/pablokvitca/classdeck-api/1.0.0"
+  baseUrl = "http://localhost:8080/pablokvitca/classdeck-api/1.0.0";
+  all_errors: string[] = [];
 
   constructor(private httpClient: HttpClient, private router: Router) { }
 
@@ -28,6 +29,10 @@ export class AppLogInComponent implements OnInit {
         .subscribe((res) => {
           console.log(res);
           this.router.navigateByUrl('/home');
+        }, (err) => {
+          if (!this.all_errors.includes("NUID and password don't match.")) {
+            this.all_errors.push("NUID and password don't match.");
+          }
         });
     }
   }

@@ -48,6 +48,8 @@ export class UserEditComponent implements OnInit {
   totalUpdateCount: number = 0;
   updatedCount: number = 0;
 
+  all_errors: string[] = [];
+
   constructor(private httpClient: HttpClient, private router: Router) { }
 
   ngOnInit() {
@@ -335,8 +337,15 @@ export class UserEditComponent implements OnInit {
           },
           error => {
             console.log("Error", error);
-            this.done_with_update_reload();
+
+            if (!this.all_errors.includes("Error updating password.")) {
+              this.all_errors.push("Error updating password.");
+            }
           });
+    } else {
+      if (!this.all_errors.includes("Please enter a matching pair of passwords.")) {
+        this.all_errors.push("Please enter a matching pair of passwords.");
+      }
     }
   }
 

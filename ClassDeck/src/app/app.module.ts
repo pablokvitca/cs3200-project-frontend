@@ -22,6 +22,7 @@ import { CatalogViewComponent } from './catalog-view/catalog-view.component';
 import { ClassDisplayComponent } from './class-display/class-display.component';
 import { CatalogSelectionComponent } from './catalog-selection/catalog-selection.component';
 import { DisplayPrerequisitesComponent } from './display-prerequisites/display-prerequisites.component';
+import { LogOutComponentComponent } from './log-out-component/log-out-component.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { DisplayPrerequisitesComponent } from './display-prerequisites/display-p
     CatalogViewComponent,
     ClassDisplayComponent,
     CatalogSelectionComponent,
-    DisplayPrerequisitesComponent
+    DisplayPrerequisitesComponent,
+    LogOutComponentComponent
   ],
   imports: [
     BrowserModule,

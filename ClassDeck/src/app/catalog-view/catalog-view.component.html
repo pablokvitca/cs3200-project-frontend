@@ -15,5 +15,8 @@
     <div *ngIf="!loaded">
       <app-loading></app-loading>
     </div>
+    <div *ngIf="filtered_courses.length == 0">
+      Nothing found. Please try again.
+    </div>
   </div>
 </div>
