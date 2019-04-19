@@ -2,7 +2,7 @@
   <div class="schedule_options_switcher">
     <mat-tab-group [selectedIndex]="selected.value" (selectedIndexChange)="selected.setValue($event)">
       <div *ngFor="let opt of selected_semester_schedule_options; index as i;">
-        <mat-tab [label]="sem.semester + ' ' + sem.year">
+        <mat-tab [label]="opt.title">
           <app-schedule-option-display [scheduleOption]="opt" [remove_section]="remove_section" [add_section]="add_section"></app-schedule-option-display>
           <div class="buttons-area">
             <button mat-raised-button color="primary" (click)="save_schedule($event)">Save!</button>
