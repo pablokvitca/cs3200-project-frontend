@@ -43,11 +43,12 @@
   height: 1000px;
   overflow-y: scroll;
   width: 100%;
+}
 
+.section_selection {
   mat-paginator {
     margin-bottom: 15px;
   }
-
 }
 
 .section-item {
@@ -86,4 +87,16 @@
 .update-title-form {
   margin: 10px 15px;
   width: 90%;
+}
+
+.errors-display {
+  width: 100%;
+  text-align: center;
+  margin-top: 5px;
+
+  .error-card {
+    background-color: #e79191;
+    width: 75%;
+    margin: 2px 5px;
+  }
 }

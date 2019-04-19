@@ -36,6 +36,7 @@ export class HomeComponent implements OnInit {
   filterSectionsControl = new FormControl();
   currentPage: number = 0;
   loaded = false;
+  all_errors: string[] = [];
 
   @Output() remove_section = new EventEmitter<number>();
   @Output() add_section = new EventEmitter<number>();
@@ -52,6 +53,7 @@ export class HomeComponent implements OnInit {
   pageEvent(event: PageEvent) {
     this.currentPage = event.pageIndex;
     this.filterDisplaySections();
+    this.ref.markForCheck();
   }
 
   filterDisplaySections() {
@@ -71,15 +73,18 @@ export class HomeComponent implements OnInit {
     this.load_semesters();
     this.selectedSemesterControl.valueChanges.subscribe((value) => {
       this.refresh_selected_semester_schedule_options();
+      this.ref.markForCheck();
     })
     this.add_section.subscribe((crn) => {
       let sec = _.find(this.available_sections, (sec) => {
         return sec.crn == crn;
       });
       this.add_to_current_schedule_option(sec);
+      this.ref.markForCheck();
     });
     this.remove_section.subscribe((crn) => {
       this.remove_from_current_schedule_option(crn);
+      this.ref.markForCheck();
     });
     this.selected.valueChanges.subscribe((val) => {
       if (val != this.selected_semester_schedule_options.length) {
@@ -89,6 +94,7 @@ export class HomeComponent implements OnInit {
         this.current_schedule_id = val;
         this.update_current_section();
       }
+      this.ref.markForCheck();
     });
   }
 
@@ -125,7 +131,8 @@ export class HomeComponent implements OnInit {
       .subscribe((res: any) => {
         this.available_sections = res;
         this.loaded = true;
-        this.pageEvent({ pageIndex: 0, pageSize: 50, length: this.available_sections.length })
+        this.pageEvent({ pageIndex: 0, pageSize: 50, length: this.available_sections.length });
+        this.ref.markForCheck();
       });
   }
 
@@ -137,6 +144,7 @@ export class HomeComponent implements OnInit {
         this.user = res[0];
         this.load_options();
         this.refresh_selected_semester_schedule_options();
+        this.ref.markForCheck();
       });
   }
 
@@ -161,6 +169,7 @@ export class HomeComponent implements OnInit {
           this.current_schedule_id = res[1];
           window.location.reload();
         }
+        this.ref.markForCheck();
       })
   }
 
@@ -177,8 +186,10 @@ export class HomeComponent implements OnInit {
         withCredentials: true
       }).subscribe((res) => {
         window.location.reload();
+        this.ref.markForCheck();
       }, (err) => {
         window.location.reload();
+        this.ref.markForCheck();
       })
   }
 
@@ -187,6 +198,7 @@ export class HomeComponent implements OnInit {
       withCredentials: true
     }).subscribe((res) => {
       window.location.reload();
+      this.ref.markForCheck();
     });
   }
 
@@ -212,8 +224,30 @@ export class HomeComponent implements OnInit {
           } else {
             this.save_count += 1;
           }
+          this.ref.markForCheck();
         });
     }
+    this.to_remove_sections.forEach((to_remove) => {
+      this.httpClient.delete(this.baseUrl + "/schedule_option_section/" + this.current_schedule_id + "/" + to_remove,
+        {
+          withCredentials: true
+        }).subscribe((res) => {
+          if (this.save_count == option.sections.length + this.to_remove_sections) {
+            window.location.reload();
+          } else {
+            this.save_count += 1;
+          }
+          console.log(res);
+          this.ref.markForCheck();
+        }, (err) => {
+          if (this.save_count == option.sections.length + this.to_remove_sections) {
+            window.location.reload();
+          } else {
+            this.save_count += 1;
+          }
+          console.log(err);
+        })
+    });
     option.sections.forEach(section => {
       this.httpClient.post(this.baseUrl + "/schedule_option_section",
         {
@@ -228,33 +262,23 @@ export class HomeComponent implements OnInit {
           } else {
             this.save_count += 1;
           }
+          this.ref.markForCheck();
           console.log(res);
         }, (err) => {
-          if (this.save_count == option.sections.length + this.to_remove_sections) {
-            window.location.reload();
+          if ((err.error == "schedule options cannot have time conflicts")
+            || (err.error == "schedule options can only be on the schedule's semester")) {
+            this.save_count = 0;
+            if (!this.all_errors.includes(err.error)) {
+              this.all_errors.push(err.error);
+            }
           } else {
-            this.save_count += 1;
+            if (this.save_count == option.sections.length + this.to_remove_sections) {
+              window.location.reload();
+            } else {
+              this.save_count += 1;
+            }
           }
-          console.log(err);
-        })
-    });
-    this.to_remove_sections.forEach((to_remove) => {
-      this.httpClient.delete(this.baseUrl + "/schedule_option_section/" + this.current_schedule_id + "/" + to_remove,
-        {
-          withCredentials: true
-        }).subscribe((res) => {
-          if (this.save_count == option.sections.length + this.to_remove_sections) {
-            window.location.reload();
-          } else {
-            this.save_count += 1;
-          }
-          console.log(res);
-        }, (err) => {
-          if (this.save_count == option.sections.length + this.to_remove_sections) {
-            window.location.reload();
-          } else {
-            this.save_count += 1;
-          }
+          this.ref.markForCheck();
           console.log(err);
         })
     });
@@ -279,6 +303,7 @@ export class HomeComponent implements OnInit {
         this.schedule_options = res;
         this.refresh_selected_semester_schedule_options();
         this.load_all_sections(this.current_schedule_id);
+        this.ref.markForCheck();
       });
   }
 
@@ -289,64 +314,8 @@ export class HomeComponent implements OnInit {
         this.selectedSemesterControl.setValue(this.semesters[0].id);
         this.refresh_selected_semester_schedule_options();
         this.load_user();
+        this.ref.markForCheck();
       });
   }
 
-}
-
-
-export class SectionsDataSource extends DataSource<string | undefined> {
-  private pageSize = 100;
-  private cachedData = Array.from<string>({ length: this.length });
-  private fetchedPages = new Set<number>();
-  private dataStream = new BehaviorSubject<(string | undefined)[]>(this.cachedData);
-  private subscription = new Subscription();
-
-  constructor(data: any[] = []) {
-    super()
-    this.cachedData = data;
-  }
-
-  get length() {
-    if (this.cachedData && this.cachedData.length) {
-      return this.cachedData.length;
-    }
-    return 0;
-  }
-
-  switchData(new_data: any[]) {
-    this.cachedData = new_data;
-  }
-
-  connect(collectionViewer: CollectionViewer): Observable<(string | undefined)[]> {
-    this.subscription.add(collectionViewer.viewChange.subscribe(range => {
-      const startPage = this.getPageForIndex(range.start);
-      const endPage = this.getPageForIndex(range.end - 1);
-      for (let i = startPage; i <= endPage; i++) {
-        this.fetchPage(i);
-      }
-    }));
-    return this.dataStream;
-  }
-
-  disconnect(): void {
-    this.subscription.unsubscribe();
-  }
-
-  private getPageForIndex(index: number): number {
-    return Math.floor(index / this.pageSize);
-  }
-
-  private fetchPage(page: number) {
-    if (this.fetchedPages.has(page)) {
-      return;
-    }
-    this.fetchedPages.add(page);
-
-    // Use `setTimeout` to simulate fetching data from server.
-    setTimeout(() => {
-      this.cachedData.splice(page * this.pageSize, this.pageSize);
-      this.dataStream.next(this.cachedData);
-    }, Math.random() * 1000 + 200);
-  }
 }

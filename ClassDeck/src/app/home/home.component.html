@@ -11,6 +11,9 @@
             <button mat-raised-button color="accent" (click)="duplicate_schedule($event)">Duplicate</button>
             <button mat-raised-button color="warn" (click)="delete_schedule($event)">Delete</button>
           </div>
+          <div *ngIf="all_errors.length > 0" class="errors-display">
+            <mat-card *ngFor="let err of all_errors;" class="error-card">{{err}}</mat-card>
+          </div>
           <app-schedule-option-display [scheduleOption]="opt" [remove_section]="remove_section"
             [add_section]="add_section"></app-schedule-option-display>
         </mat-tab>

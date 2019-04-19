@@ -27,3 +27,15 @@ button {
   margin-left: 5px;
   margin-right: 5px;
 }
+
+.errors-display {
+  width: 100%;
+  text-align: center;
+  margin-top: 5px;
+
+  .error-card {
+    background-color: #e79191;
+    width: 75%;
+    margin: 2px 5px;
+  }
+}
