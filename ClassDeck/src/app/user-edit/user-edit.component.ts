@@ -45,6 +45,9 @@ export class UserEditComponent implements OnInit {
 
   user: any = {};
 
+  totalUpdateCount: number = 0;
+  updatedCount: number = 0;
+
   constructor(private httpClient: HttpClient, private router: Router) { }
 
   ngOnInit() {
@@ -195,8 +198,17 @@ export class UserEditComponent implements OnInit {
 
   add_course(event, d) {
     for (let i = 0; i < this.course_options.length; i += 1) {
-      if (this.course_options[i].name == d) {
-        if (-1 == _.findIndex(this.courses, this.course_options[i])) {
+      let cur = this.course_options[i].class_dept
+        + " "
+        + this.course_options[i].class_number
+        + "("
+        + this.course_options[i].name
+        + ")";
+      if (cur == d) {
+        if (-1 == _.findIndex(this.courses, (c) => {
+          return c.class_dept == this.course_options[i].class_dept
+            && c.class_number == this.course_options[i].class_number;
+        })) {
           this.courses.push(this.course_options[i]);
         }
         break;
@@ -206,10 +218,23 @@ export class UserEditComponent implements OnInit {
   }
 
   save_changes(event) {
+    this.updatedCount = 0;
+    this.totalUpdateCount = 0;
+    this.totalUpdateCount += this.degrees.length;
+    this.totalUpdateCount += this.degrees_to_remove.length;
+    this.totalUpdateCount += this.courses.length;
+    this.totalUpdateCount += this.courses_to_remove.length;
+    if (this.shouldUpdatePassword()) {
+      this.totalUpdateCount += 1;
+    }
     this.update_password();
     this.update_degrees();
     this.update_courses();
-    this.router.navigateByUrl("/home");
+  }
+
+  shouldUpdatePassword() {
+    return this.passControl.value && this.passrControl.value
+      && this.passControl.value == this.passrControl.value;
   }
 
   update_degrees() {
@@ -225,9 +250,11 @@ export class UserEditComponent implements OnInit {
         .subscribe(
           data => {
             console.log("POST Request is successful ", data);
+            this.done_with_update_reload();
           },
           error => {
             console.log("Error", error);
+            this.done_with_update_reload();
           })
     });
     this.degrees_to_remove.forEach(deg => {
@@ -238,49 +265,86 @@ export class UserEditComponent implements OnInit {
         .subscribe(
           data => {
             console.log("DELETE Request is successful ", data);
+            this.done_with_update_reload();
           },
           error => {
             console.log("Error", error);
+            this.done_with_update_reload();
           })
     });
   }
 
   update_courses() {
-    //TODO:
-    // this.degrees.forEach(deg => {
-    //   this.httpClient.post(this.baseUrl + "/pursued_degree",
-    //     {
-    //       "nuid": this.user.nuid,
-    //       "degree_id": deg.id
-    //     },
-    //     {
-    //       withCredentials: true
-    //     })
-    //     .subscribe(
-    //       data => {
-    //         console.log("POST Request is successful ", data);
-    //       },
-    //       error => {
-    //         console.log("Error", error);
-    //       })
-    // });
-    // this.degrees_to_remove.forEach(deg => {
-    //   this.httpClient.delete(this.baseUrl + "/pursued_degree/" + this.user.nuid + "/" + deg.id,
-    //     {
-    //       withCredentials: true
-    //     })
-    //     .subscribe(
-    //       data => {
-    //         console.log("DELETE Request is successful ", data);
-    //       },
-    //       error => {
-    //         console.log("Error", error);
-    //       })
-    // });
+    this.courses.forEach(course => {
+      this.httpClient.post(this.baseUrl + "/student_taken_classes",
+        {
+          nuid: this.user.nuid,
+          class_dept: course.class_dept,
+          class_number: course.class_number
+        },
+        {
+          withCredentials: true
+        })
+        .subscribe(
+          data => {
+            console.log("POST Request is successful ", data);
+            this.done_with_update_reload();
+          },
+          error => {
+            console.log("Error", error);
+            this.done_with_update_reload();
+          })
+    });
+    this.courses_to_remove.forEach(course => {
+      this.httpClient.delete(
+        this.baseUrl
+        + "/student_taken_classes/"
+        + this.user.nuid
+        + "/" + course.class_dept
+        + "/" + course.class_number,
+        {
+          withCredentials: true
+        })
+        .subscribe(
+          data => {
+            console.log("DELETE Request is successful ", data);
+            this.done_with_update_reload();
+          },
+          error => {
+            console.log("Error", error);
+            this.done_with_update_reload();
+          })
+    });
   }
 
   update_password() {
-    //TODO:
+    if (this.shouldUpdatePassword()) {
+      this.httpClient.put(this.baseUrl + "/student", {
+        nuid: this.user.nuid,
+        name: this.user.name,
+        email: this.user.email,
+        password: this.passControl.value
+      },
+        {
+          withCredentials: true
+        })
+        .subscribe(
+          data => {
+            console.log("POST Request is successful ", data);
+            this.done_with_update_reload();
+          },
+          error => {
+            console.log("Error", error);
+            this.done_with_update_reload();
+          });
+    }
+  }
+
+  done_with_update_reload() {
+    this.updatedCount += 1;
+    if (this.updatedCount >= this.totalUpdateCount) {
+      window.location.reload();
+    }
   }
 
 }

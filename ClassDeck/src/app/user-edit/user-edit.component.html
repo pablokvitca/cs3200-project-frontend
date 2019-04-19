@@ -1,4 +1,4 @@
-<div style="text-align:center; height=100%; padding-top: 15%;">
+<div style="text-align:center; height: 100%; padding-top: 15%;">
   <div class="user-edit-container">
     <mat-card class="user-edit-card" *ngIf="loaded">
       <mat-card-header>
@@ -11,20 +11,23 @@
               <mat-tab [label]="'Fulfilled Classes'">
                 <div class="mat-tab tab-classes">
                   <div *ngFor="let course of courses; index as i;" class="inline-btn">
-                    <mat-form-field >
-                      <input matInput [placeholder]="'Fulfilled course'" type="text" [value]="course.class_dept + ' ' + course.class_number" disabled>
+                    <mat-form-field>
+                      <input matInput [placeholder]="'Fulfilled course'" type="text"
+                        [value]="course.class_dept + ' ' + course.class_number" disabled>
                     </mat-form-field>
-                    <button mat-icon-button (click)="remove_nth_class($event, i)">
+                    <button mat-icon-button (click)="remove_nth_course($event, i)">
                       <mat-icon aria-label="">delete</mat-icon>
                     </button>
                     <br>
                   </div>
                   <div class="inline-btn">
                     <mat-form-field>
-                      <input matInput placeholder="Add a fulfilled course" type="text" [formControl]="addCourseControl" [matAutocomplete]="autoC" #addcourse>
+                      <input matInput placeholder="Add a fulfilled course" type="text" [formControl]="addCourseControl"
+                        [matAutocomplete]="autoC" #addcourse>
                     </mat-form-field>
                     <mat-autocomplete #autoC="matAutocomplete" [displayWith]="displayFnCourse">
-                      <mat-option *ngFor="let option of filteredCourses | async" [value]="option">{{option.class_dept}} {{option.class_number}} ({{option.name}})</mat-option>
+                      <mat-option *ngFor="let option of filteredCourses | async" [value]="option">{{option.class_dept}}
+                        {{option.class_number}} ({{option.name}})</mat-option>
                     </mat-autocomplete>
                     <button mat-icon-button (click)="add_course($event, addcourse.value)">
                       <mat-icon aria-label="">add</mat-icon>
@@ -35,7 +38,7 @@
               <mat-tab [label]="'Degrees'">
                 <div class="mat-tab tab-degrees">
                   <div *ngFor="let deg of degrees; index as i;" class="inline-btn">
-                    <mat-form-field >
+                    <mat-form-field>
                       <input matInput [placeholder]="deg.type" type="text" [value]="deg.name" disabled>
                     </mat-form-field>
                     <button mat-icon-button (click)="remove_nth_degree($event, i)">
@@ -45,10 +48,12 @@
                   </div>
                   <div class="inline-btn">
                     <mat-form-field>
-                      <input matInput placeholder="Add a degree" type="text" [formControl]="addDegreeControl" [matAutocomplete]="auto"#adddegree>
+                      <input matInput placeholder="Add a degree" type="text" [formControl]="addDegreeControl"
+                        [matAutocomplete]="auto" #adddegree>
                     </mat-form-field>
                     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-                      <mat-option *ngFor="let option of filteredOptions | async" [value]="option">{{option.name}}</mat-option>
+                      <mat-option *ngFor="let option of filteredOptions | async" [value]="option">{{option.name}}
+                      </mat-option>
                     </mat-autocomplete>
                     <button mat-icon-button (click)="add_degree($event, adddegree.value)">
                       <mat-icon aria-label="">add</mat-icon>
@@ -63,7 +68,7 @@
                   </mat-form-field>
                   <br>
                   <mat-form-field>
-                    <input matInput placeholder="Name" [formControl]="nameControl"#name [disabled]="true">
+                    <input matInput placeholder="Name" [formControl]="nameControl" #name [disabled]="true">
                   </mat-form-field>
                   <br>
                   <mat-form-field>
